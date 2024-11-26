@@ -1,5 +1,6 @@
 from entities.user import User
 import re
+import sys,pdb
 
 class UserInputError(Exception):
     pass
@@ -36,12 +37,19 @@ class UserService:
     def validate(self, username, password):
         if not username or not password:
             raise UserInputError("Username and password are required")
+            
+        if self._user_repository.find_by_username(username):
+            raise UserInputError("Username already taken")
+            
         if len(username) < 3:
             raise ValueError("Username must be at least 3 characters long.")
+            
         if not re.match("^[a-z]+$", username):
             raise ValueError("Username can only contain lowercase letters a-z.")
+            
         if len(password) < 8:
             raise ValueError("Password must be at least 8 characters long.")
+            
         if password.isalpha():
             raise ValueError("Password must contain at least one non-letter character.")
 
